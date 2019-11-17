@@ -7,9 +7,6 @@ services:
             - ./src:/app
         ports:
             - "9000:80"
-        # networks:
-        #     vpcbr:
-        #         ipv4_address: 10.5.0.5
     mysql:
         container_name: dbapp_mysql
         restart: always
