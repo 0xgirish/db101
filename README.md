@@ -3,14 +3,14 @@
 
 Dependencies
 -----------
-    > docker
-    > docker-compose
+    1 docker
+    2 docker-compose
 
 How to run?
 -----------
-    - docker-compose up --build
+    $ docker-compose up --build
 
 Note:
 -----
-    - Main application is running on *localhost:9000*
-    - PhpMyAdmin is running on *localhost:8080*
+    1 Main application is running on *localhost:9000*
+    2 PhpMyAdmin is running on *localhost:8080*
