@@ -1,0 +1,49 @@
+version: '2'
+services:
+    website:
+        container_name: dbapp_php
+        image: "webdevops/php-apache:ubuntu-16.04"
+        volumes:
+            - ./src:/app
+        ports:
+            - "9000:80"
+        # networks:
+        #     vpcbr:
+        #         ipv4_address: 10.5.0.5
+    mysql:
+        container_name: dbapp_mysql
+        restart: always
+        image: "mysql:5.7"
+        environment:
+            - MYSQL_HOST=127.0.0.1
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_USER=dbapp
+            - MYSQL_PASS=dbpass
+            - MYSQL_DATABASE=employee_management
+        volumes:
+            - ./data/dump:/docker-entrypoint-initdb.d
+            - ./data/db:/var/lib/mysql
+            - ./mysql:/app
+        ports:
+            - "3306:3306"
+    phpmyadmin:
+        container_name: dbapp_admin
+        restart: always
+        image: "phpmyadmin/phpmyadmin"
+        ports:
+            - "8080:80"
+        environment:
+            - PMA_HOST=dbapp_mysql
+            - MYSQL_ROOT_PASSWORD=root
+
+        # networks:
+        #     vpcbr:
+        #         ipv4_address: 10.5.0.6
+
+# networks:
+#     vpcbr:
+#         driver: bridge
+#         ipam:
+#             config:
+#                 - subnet: 10.5.0.0/16
+#                   gateway: 10.5.0.1

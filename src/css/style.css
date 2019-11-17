@@ -1,0 +1,55 @@
+.profile.a {
+    text-decoration: none;
+}
+
+.profile.a:link {
+    color: red;
+}
+
+.profile.a:visited {
+    color: red;
+}
+
+.profile.a:hover {
+    text-decoration: underline;
+}
+
+/* #myBtn:hover {
+    color: #fff !important;
+    text-decoration: none;
+} */
+
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    padding-left: 400px;
+    padding-right: 400px;
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
