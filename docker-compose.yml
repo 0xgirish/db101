@@ -35,15 +35,3 @@ services:
         environment:
             - PMA_HOST=dbapp_mysql
             - MYSQL_ROOT_PASSWORD=root
-
-        # networks:
-        #     vpcbr:
-        #         ipv4_address: 10.5.0.6
-
-# networks:
-#     vpcbr:
-#         driver: bridge
-#         ipam:
-#             config:
-#                 - subnet: 10.5.0.0/16
-#                   gateway: 10.5.0.1
