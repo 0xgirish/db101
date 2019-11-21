@@ -16,7 +16,7 @@
     if($action == "accept") $action = "Accepted";
     if($action == "reject") $action = "Rejected";
     if($action == "comment") {
-        $comment = "Please specify your reason more clearly";
+        $comment = "please add more comments";
         $result = query_with_error("INSERT INTO leave_comments(application_id, comment, user_id) VALUES('$aid','$comment', $user_id)");
     } else {
         $result = query_with_error("UPDATE leave_record SET status = '$action' WHERE application_id = '$aid'");

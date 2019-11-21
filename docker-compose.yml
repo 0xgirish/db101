@@ -2,7 +2,9 @@ version: '2'
 services:
     website:
         container_name: dbapp_php
-        image: "webdevops/php-apache:ubuntu-16.04"
+        build:
+            context: ./src
+            dockerfile: Dockerfile
         volumes:
             - ./src:/app
         ports:
@@ -20,9 +22,16 @@ services:
         volumes:
             - ./data/dump:/docker-entrypoint-initdb.d
             - ./data/db:/var/lib/mysql
-            - ./mysql:/app
         ports:
             - "3306:3306"
+    mongodb:
+        container_name: dbapp_mongo
+        image: "mongo"
+        restart: always
+        volumes:
+            - ./data/mongo:/data/db
+        ports:
+            - "27020:27017"
     phpmyadmin:
         container_name: dbapp_admin
         restart: always

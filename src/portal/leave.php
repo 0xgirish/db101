@@ -161,13 +161,7 @@
                 <td><?php echo $row['start_date']; ?></td>
                 <td><?php echo $row['end_date']; ?></td>
                 <td>
-                <?php if(!$approve) { ?>
                 <button class="btn btn-primary" id="myBtn<?php echo $x; ?>">View</button>
-                <?php } else { ?>
-                <a href="/portal/finial.php?a=accept&aid=<?php echo $row['application_id']; ?>"><button class="btn btn-success">Accept</button></a>
-                <a href="/portal/finial.php?a=comment&aid=<?php echo $row['application_id']; ?>"><button class="btn btn-primary">Comment</button></a>
-                <a href="/portal/finial.php?a=reject&aid=<?php echo $row['application_id']; ?>"><button class="btn btn-danger">Reject</button></a>
-                <?php } ?>
                 </td>
                 </tr>
                 <?php $x++; } ?>
@@ -209,9 +203,6 @@
         $row = $rows[0];
         $approve = $rows[1];
         $comment = $rows[2];
-        if($approve) {
-            $x++; continue;
-        }
 ?>
 <!-- The Modal -->
 <div id="myModal<?php echo $x; ?>" class="modal">
@@ -238,19 +229,47 @@
             <textarea class="form-control" id="leaveReason" rows="3" name="forward_comment" placeholder="add comment for further review"></textarea>
         </div>
         <div class="form-row">
-        <div class="form-check">
-            <input type="checkbox" name="borrow" class="form-check-input" id="borrowLeave" value="<?php echo ($row['borrow'] == 1) ? 'ON' : 'OFF' ?>" disabled>
+        <div class="form-check" style="margin-bottom: 20px">
+            <input type="checkbox" name="borrow" class="form-check-input" id="borrowLeave" <?php echo ($row['borrow'] == 1) ? 'checked' : ''; ?> disabled>
             <label class="form-check-label" for="borrowLeave">Borrow Leave</label>
         </div>
         <input type="text" name="aid" value="<?php echo $row['application_id']; ?>" hidden>
-        <button type="submit" class="btn btn-info" style="position:absolute; right: 20px">Forward</button>
         </div>
+        <?php if(!$approve) { ?>
+        <button type="submit" class="btn btn-primary" style="position:absolute; right: 20px; bottom: 6px">Forward</button>
+        <a href='/portal/finial.php?a=comment&aid=<?php echo $row['application_id']; ?>'><button type="button" class="btn btn-info" style="position:absolute; left: 20px; bottom: 6px">Ask For Comments</button></a>
+        <?php } else { ?>
+        <a href="/portal/finial.php?a=accept&aid=<?php echo $row['application_id']; ?>"><button type="button" class="btn btn-success" style="position:absolute; right: 20px; bottom: 6px">Accept</button></a>
+        <a href="/portal/finial.php?a=comment&aid=<?php echo $row['application_id']; ?>"><button type="button" class="btn btn-info" style="position:absolute; left: 175px; bottom: 6px">Comment</button></a>
+        <a href="/portal/finial.php?a=reject&aid=<?php echo $row['application_id']; ?>"><button type="button" class="btn btn-danger" style="position:absolute; left: 20px; bottom: 6px">Reject</button></a>
+        <?php } ?>
         </form>
-        <span class="close<?php echo $x; ?>" style="position:absolute; right: 40px;color: #aaaaaa; float: right; font-size: 28px; font-weight: bold;">&times;</span>
+        <span class="close<?php echo $x; ?>" style="position:absolute; right: 40px;color: #aaaaaa; float: right; font-size: 28px; font-weight: bold;cursor: pointer">&times;</span>
     </div>
 
+<script>
+    var modal<?php echo $x; ?> = document.getElementById("myModal<?php echo $x; ?>");
+    var btn<?php echo $x; ?> = document.getElementById("myBtn<?php echo $x; ?>");
+    var span<?php echo $x; ?> = document.getElementsByClassName("close<?php echo $x; ?>")[0];
+
+    btn<?php echo $x; ?>.onclick = function() {
+        modal<?php echo $x; ?>.style.display = "block";
+    }
+
+    span<?php echo $x; ?>.onclick = function() {
+        modal<?php echo $x; ?>.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal<?php echo $x; ?>) {
+            modal<?php echo $x; ?>.style.display = "none";
+        }
+    }
+
+</script>
+
 </div>
-<?php } ?>
+<?php $x++; } ?>
 
 <!-- The Modal -->
 <div id="myModal" class="modal">
@@ -280,15 +299,18 @@
         <button type="submit" class="btn btn-primary" style="position:absolute; right: 20px">Apply</button>
         </div>
         </form>
-        <span class="close" style="position:absolute; right: 40px;color: #aaaaaa; float: right; font-size: 28px; font-weight: bold;">&times;</span>
+        <span class="close" style="position:absolute; right: 40px;color: #aaaaaa; float: right; font-size: 28px; font-weight: bold;cursor: pointer">&times;</span>
     </div>
 
 </div>
 
-
-<?php 
+<?php if($application_id != "none") {
     $result = query_with_error("SELECT comment FROM leave_comments WHERE application_id = '$application_id' AND user_id = $user_id");
     $comment = $result->fetch_assoc()['comment'];
+
+    $result = query_with_error("SELECT * FROM leave_record WHERE application_id = '$application_id'");
+    $row = $result->fetch_assoc();
+
 ?>
 <!-- The Modal -->
 <div id="reqModal" class="modal">
@@ -299,11 +321,11 @@
         <div class="form-row">
             <div class="form-group col-md-6">
             <label for="leaveFrom">Start date</label>
-            <input type="date" class="form-control" name="startdate" id="startdate" placeholder="Leave start date" value="<?php echo $application_data['start_date']; ?>" disabled>
+            <input type="date" class="form-control" name="startdate" id="startdate" placeholder="Leave start date" value="<?php echo $row['start_date']; ?>" disabled>
             </div>
             <div class="form-group col-md-6">
             <label for="leaveTO">End date</label>
-            <input type="date" class="form-control" id="enddate" name="enddate" placeholder="Leave finish date" value="<?php echo $application_data['end_date']; ?>" disabled>
+            <input type="date" class="form-control" id="enddate" name="enddate" placeholder="Leave finish date" value="<?php echo $row['end_date']; ?>" disabled>
             </div>
         </div>
         <div class="form-group">
@@ -312,17 +334,18 @@
         </div>
         <div class="form-row">
         <div class="form-check">
-            <input type="checkbox" name="borrow" class="form-check-input" id="borrowLeave" value="<?php echo ($application_data['borrow'] == 1) ? 'ON' : 'OFF' ?>" disabled>
+            <input type="checkbox" name="borrow" class="form-check-input" id="borrowLeave" value="<?php echo ($row['borrow'] == 1) ? 'ON' : 'OFF' ?>" disabled>
             <label class="form-check-label" for="borrowLeave">Borrow Leave</label>
         </div>
         <input type="text" name="aid" value="<?php echo $application_data['application_id']; ?>" hidden>
         <button type="submit" class="btn btn-info" style="position:absolute; right: 20px">Comment</button>
         </div>
         </form>
-        <span class="reqclose" style="position:absolute; right: 40px;color: #aaaaaa; float: right; font-size: 28px; font-weight: bold;">&times;</span>
+        <span class="reqclose" style="position:absolute; right: 40px;color: #aaaaaa; float: right; font-size: 28px; font-weight: bold;cursor: pointer">&times;</span>
     </div>
 
 </div>
+<?php } ?>
 
 <script>
 
@@ -344,32 +367,6 @@
         }
     }
 
-<?php
-    $x = 1;
-    foreach($pending_requests as $rows) {
-        $approve = $rows[1];
-        if($approve) {$x++; continue;}
-    ?>
-
-    var modal<?php echo $x; ?> = document.getElementById("myModal<?php echo $x; ?>");
-    var btn<?php echo $x; ?> = document.getElementById("myBtn<?php echo $x; ?>");
-    var span<?php echo $x; ?> = document.getElementsByClassName("close<?php echo $x; ?>")[0];
-
-    btn<?php echo $x; ?>.onclick = function() {
-        modal<?php echo $x; ?>.style.display = "block";
-    }
-
-    span<?php echo $x; ?>.onclick = function() {
-        modal<?php echo $x; ?>.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == modal<?php echo $x; ?>) {
-            modal<?php echo $x; ?>.style.display = "none";
-        }
-    }
-
-    <?php } ?>
 </script>
 
 
